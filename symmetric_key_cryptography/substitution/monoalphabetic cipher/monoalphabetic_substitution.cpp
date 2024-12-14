@@ -14,7 +14,7 @@ void generate_dictionary(std::unordered_map<char, char>& cipher){
     }
 
     for(char i = 'A'; i<='Z'; ++i){
-        char cipher_char = 97+std::rand()%16;
+        char cipher_char = 97+std::rand()%26;
         cipher[i] = cipher_char;
     }
 }
