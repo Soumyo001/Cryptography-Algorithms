@@ -75,8 +75,8 @@ std::map<char, std::vector<std::string>> generateSymbolMap(std::vector<std::stri
     for (char c = 'A'; c <= 'Z'; ++c)
     {
         int symbolCount = std::round((symbols.size() * FDT.at(c)) / 100);
-        for (int i = 0; i < symbolCount && idx < symbols.size(); ++i, ++idx)
-            symMap[c].push_back(symbols[idx]);
+        for (int i = idx; i < idx + symbolCount; ++i)
+            symMap[c].push_back(symbols[i]);
     }
 
     return symMap;
@@ -148,7 +148,6 @@ std::string decrypt(std::string& s, std::map<char, std::vector<std::string>>& sy
 int main(void)
 {
     std::vector<std::string> symbols = generateSpecialSymbols();
-    for(auto& i:symbols) std::cout<<i<<" ";
 
     std::map<char, double> FDT = readFDT();
     std::map<char, std::vector<std::string>> symbolMap = generateSymbolMap(symbols, FDT);
