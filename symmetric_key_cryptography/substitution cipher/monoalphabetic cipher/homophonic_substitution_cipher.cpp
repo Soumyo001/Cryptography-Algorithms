@@ -109,7 +109,7 @@ std::string encrypt(std::string &s, std::map<char, std::vector<std::string>> &sy
                 cipherText+="/xSP ";
             }
             else{
-                // cipherText+= (c + " "); don't use this as the character is being appended to a string
+                // cipherText+= (c + " "); don't use this as a character is being appended to a string
                 // cipherText.append("/SPC");
                 // cipherText.append(std::string(1,c));
                 // cipherText.append("/SPC ");
