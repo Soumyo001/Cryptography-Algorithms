@@ -166,21 +166,4 @@ int main(void){
     std::cout<<cipher<<"\n";
     std::string text = decrypt(keyMatrix, cipher, keyPos);
     std::cout<<text<<"\n\n";
-
-    // std::transform(s.begin(), s.end(), s.begin(), ::tolower);
-    // std::transform(text.begin(), text.end(), text.begin(), ::tolower);
-
-    // if (s == text) {
-    //     std::cout << "The paragraphs are identical (ignoring case)." << std::endl;
-    // } else {
-    //     std::cout << "The paragraphs are NOT identical." << std::endl;
-
-    //     // Print mismatched portions (debugging)
-    //     for (size_t i = 0; i < s.size() && i < text.size(); ++i) {
-    //         if (s[i] != text[i]) {
-    //             std::cout << "Mismatch at position " << i << ": "
-    //             << s[i] << " != " << text[i] << std::endl;
-    //         }
-    //     }
-    // }
 }
