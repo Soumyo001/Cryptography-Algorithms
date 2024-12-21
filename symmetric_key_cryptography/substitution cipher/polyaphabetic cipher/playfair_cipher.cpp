@@ -59,10 +59,7 @@ void prepareText(std::string& s){
 std::string cleanDecryptedText(std::string s) {
     std::string realText = "";
     for (int i = 0; i < s.length(); i+=2) {
-        if( (s[i] == 'X'  && s[i+1] == 'Q')
-        ||  (s[i] == 'Q'  && s[i+1] == 'X')
-        ||  s[i+1] == 'X' || s[i+1] == 'Q'
-        ){
+        if(s[i+1] == 'X' || s[i+1] == 'Q'){
             realText += std::string(1, s[i]);
         }else{
             realText += std::string(1, s[i]) + std::string(1, s[i+1]) ;
