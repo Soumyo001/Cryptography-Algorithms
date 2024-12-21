@@ -24,16 +24,15 @@ std::pair<std::vector<std::vector<char>>, std::map<char, std::pair<int,int>>> pr
         if(c == 'I' || c == 'J')
             hasIJ = true;
     }
+    std::cout<<keyAlphabet.length()<<"\n";
 
-    for(int i = 0, k = 0; i<5; ++i){
-        for(int j = 0; j<5 && k<keyAlphabet.length(); ++j, ++k){
-            keyMatrixPos.first[i][j] = keyAlphabet[k];
-            keyMatrixPos.second[keyAlphabet[k]] = {i,j};
-            if(keyAlphabet[k] == 'I')
-                keyMatrixPos.second['J'] = {i,j};
-            else if(keyAlphabet[k] == 'J')
-                keyMatrixPos.second['I'] = {i,j};
-        }
+    for(int i=0; i < 25; ++i){
+        keyMatrixPos.first[i/5][i%5] = keyAlphabet[i];
+        keyMatrixPos.second[keyAlphabet[i]] = {i/5, i%5};
+        if(keyAlphabet[i] == 'I')
+            keyMatrixPos.second['J'] = {i/5, i%5};
+        else if(keyAlphabet[i] == 'J')
+            keyMatrixPos.second['I'] = {i/5, i%5};
     }
     return keyMatrixPos;
 }
