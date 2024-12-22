@@ -77,6 +77,7 @@ std::map<char, std::vector<std::string>> generateSymbolMap(std::vector<std::stri
         int symbolCount = std::round((symbols.size() * FDT.at(c)) / 100);
         for (int i = idx; i < idx + symbolCount; ++i)
             symMap[c].push_back(symbols[i]);
+        idx += symbolCount;
     }
 
     return symMap;
