@@ -9,7 +9,9 @@ std::vector<std::vector<char>> prepareGrid(std::string& s, std::string& key){
     grid.push_back(v);
     v.clear();
     for(auto& i:s){
-        v.push_back(i);
+        if(i == ' ')
+            v.push_back('#');
+        else v.push_back(i);
         if((int)v.size() == key.length()){
             grid.push_back(v);
             v.clear();
@@ -26,10 +28,10 @@ std::vector<std::vector<char>> prepareGrid(std::string& s, std::string& key){
 }
 
 std::string encrypt(std::string& s, std::string& key){
-    s.erase(std::remove_if(s.begin(),s.end(),[](const char c){
-        return !isalpha(c);
-    }), s.end());
-    for(auto& c:s) c = toupper(c);
+    // s.erase(std::remove_if(s.begin(),s.end(),[](const char c){
+    //     return !isalpha(c);
+    // }), s.end());
+    // for(auto& c:s) c = toupper(c);
     std::vector<std::vector<char>> grid = prepareGrid(s, key);
     std::cout<<"Matrix : \n";
     for(const auto& i:grid){
@@ -87,7 +89,9 @@ std::string decrypt(std::string& s, std::string& key){
             {
                 if (grid[0][j] == k && !visited[j])
                 {
-                    text += grid[i][j];
+                    if(grid[i][j] == '#')
+                        text+= " ";
+                    else text += grid[i][j];
                     visited[j] = true;
                     break;
                 }

@@ -9,7 +9,9 @@ std::vector<std::vector<char>> prepareGrid(std::string& s, std::string& key){
     grid.push_back(v);
     v.clear();
     for(auto& i:s){
-        v.push_back(i);
+        if(i == ' ')
+            v.push_back('#');
+        else v.push_back(i);
         if((int)v.size() == key.length()){
             grid.push_back(v);
             v.clear();
@@ -26,10 +28,10 @@ std::vector<std::vector<char>> prepareGrid(std::string& s, std::string& key){
 }
 
 std::string encrypt(std::string& key, std::string& s){
-    s.erase(std::remove_if(s.begin(),s.end(),[](const char c){
-        return !isalpha(c);
-    }), s.end());
-    for(auto& c:s) c = toupper(c);
+    // s.erase(std::remove_if(s.begin(),s.end(),[](const char c){
+    //     return !isalpha(c);
+    // }), s.end());
+    // for(auto& c:s) c = toupper(c);
 
     std::string cipher = "";
     std::vector<std::vector<char>> grid = prepareGrid(s, key);
@@ -45,7 +47,7 @@ std::string encrypt(std::string& key, std::string& s){
     sort(order_key.begin(), order_key.end());
 
     std::cout<<"Encryption Order : \n";
-    for(auto& i:order_key) std::cout<<i<<" ";
+    for(auto& i:order_key) std::cout<<i<<"  ";
     std::cout<<"\n";
 
     for(auto& k:order_key){
@@ -62,7 +64,6 @@ std::string encrypt(std::string& key, std::string& s){
         }
         cipher+=" ";
     }
-
     return cipher;
 }
 
@@ -72,7 +73,7 @@ std::pair<int, int> getDim(std::string& s){
     std::string chunk;
     while (stream>>chunk)
     {
-        dim.first = chunk.length()+1;
+        dim.first = __max(dim.first, chunk.length()+1);
         ++dim.second;
     }
     return dim;
@@ -92,7 +93,9 @@ std::string decrypt(std::string& s, std::string& key){
         {
             if(grid[0][i] == order_key[k] && !visited[i]){
                 for(size_t j = 1; j < grid.size(); ++j){
-                    grid[j][i] = chunk[j-1];
+                    if(chunk[j-1] == '#')
+                        grid[j][i] = ' ';
+                    else grid[j][i] = chunk[j-1];
                 }
                 visited[i] = true;
                 break;
