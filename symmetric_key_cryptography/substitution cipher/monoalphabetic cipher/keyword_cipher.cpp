@@ -5,7 +5,7 @@ const std::string key = "GYBNQKURP";
 std::string createSubstitutionAlphabet(std::string key){
     std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     std::string substitutionAlphabet = "";
-    for(auto& c : key) if(substitutionAlphabet.find(c)!=std::string::npos) substitutionAlphabet+=c;
+    for(auto& c : key) if(substitutionAlphabet.find(c)==std::string::npos) substitutionAlphabet+=c;
     for(auto& c:alphabet)
         if(substitutionAlphabet.find(c)==std::string::npos)
             substitutionAlphabet+=c;

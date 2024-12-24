@@ -152,7 +152,7 @@ int main(void)
 
     std::map<char, double> FDT = readFDT();
     std::map<char, std::vector<std::string>> symbolMap = generateSymbolMap(symbols, FDT);
-    displaySymbolMap(symbolMap);
+    // displaySymbolMap(symbolMap);
     std::string s;
     // std::cout << "Enter Plain Text : ";
     // getline(std::cin, s);
