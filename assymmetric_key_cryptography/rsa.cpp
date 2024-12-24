@@ -27,7 +27,7 @@ bool isPrime(cpp_int n, int confidence_level = 10){
     while(m % 2 == 0)  m /= 2;
 
     std::random_device rd;
-    mt11213b generator(rd());
+    mt19937 generator(rd());
     uniform_int_distribution<cpp_int> dis(2, n-2);
 
     for (int i = 0; i < confidence_level; ++i)
@@ -68,9 +68,28 @@ cpp_int generateLargePrime(int bit){
     return choice;
 }
 
-int main(void){
+cpp_int generatePublicEx(const cpp_int phi_n){
+    // get random e such that 1 < e < phi_n
+    std::random_device rd;
+    mt19937 generator(rd());
+    uniform_int_distribution<cpp_int> dis(2, phi_n - 1);
+    cpp_int e;
+    do{
+        e = dis(generator);
+    }while(std::__gcd(e, phi_n)!=1);
+    return e;
+}
+
+void generateRSAKey(int bitLength){
     cpp_int p = generateLargePrime(512);
     cpp_int q = generateLargePrime(512);
     cpp_int n = p*q;
-    std::cout<<p<<" "<<q<<" "<<n;
+    cpp_int phi_n = (p-1)*(q-1);
+    cpp_int e = generatePublicEx(phi_n);
+    std::cout<<phi_n<<"\n\n"<<e<<"\n\n"<<std::__gcd(e, phi_n)<<" "<<(1<e)<<" "<<(e>=phi_n);
+}
+
+int main(void){
+    int bitLength = 512;
+    generateRSAKey(bitLength);
 }
