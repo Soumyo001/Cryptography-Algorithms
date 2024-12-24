@@ -1,28 +1,68 @@
 #include <bits/stdc++.h>
-#include <openssl/bn.h>
-#include <openssl/crypto.h>
 
-const int N = 1e7+10;
+long long fastExponentiation(long long base, long long ex, long long mod){
+    long long result = 1;
+    base = base % mod;
+    while (ex > 0)
+    {
+        if(ex & 1) result = (result * base) % mod;
+        base = (base * base) % mod;
+        ex >>= 1;
+    }
+    return result;
+}
 
-std::vector<bool> sievePrime(){
-    std::vector<bool> v(N, true);
-    v[0]=v[1]=false;
-    for (size_t i = 2; i*i < N; ++i) if(v[i]) for (size_t j = i*i; j < N; j+=i) v[j] = false;
-    return v;
+bool isPrime(long long n, int confidence_level = 5){
+    if(n <= 1 || n == 4) return false;
+    if(n <= 3) return true;
+
+    // calculate n - 1 = 2^k % m
+    long long m = n - 1;
+    while(m % 2 == 0) m /= 2;
+
+    for (size_t i = 0; i < confidence_level; ++i)
+    {
+        // choose a => 1 < a < n - 1
+        std::random_device rd;
+        std::mt19937 generator(rd());
+        std::uniform_int_distribution<long long> dis(2, n - 2);
+        long long a = dis(generator);
+
+        // calculate b0 = a^m mod n
+        long long x = fastExponentiation(a, m, n);
+        // check if x is +1 or -1
+        if(x == 1 || x == n - 1) continue;
+
+        while (m != n - 1)
+        {
+            x = (x * x) % n;
+            m = m * 2;
+
+            if(x == 1) return false;
+            if(x == n - 1) break;
+        }
+        if(x != n - 1) return false;
+    }
+    
+    return true;
+}
+
+long long generateLargePrime(int bit){
+    std::random_device rd;
+    std::mt19937 generator(rd());
+    std::uniform_int_distribution<long long> dis(1LL<<(bit-1), (1LL<<bit)-1);
+
+    long long choice;
+    do
+    {
+        choice = dis(generator);
+        if(!(choice&1)) ++choice;
+    } while (!isPrime(choice));
+    return choice;
 }
 
 int main(void){
-    std::cout<<(1LL<<(32-1))<<" "<<(1LL<<32)-1;
-    const char*  n1 = "131465394891348917894178959058903689034560893456890456890";
-    const char*  n2 = "148912378951132451351353455667845673467546767845678475777";
-
-
-    BIGNUM* bn1 = NULL;
-    BIGNUM* bn2 = NULL;
-    BN_dec2bn(&bn1, n1);
-    BN_dec2bn(&bn2, n2);
-    BIGNUM* bn3 = BN_new();
-    BN_add(bn3, bn1, bn2);
-    const char* n3 = BN_bn2dec(bn3);
-    std::cout<<n3;
+    long long p = generateLargePrime(32);
+    long long q = generateLargePrime(32);
+    std::cout<<p<<" "<<q;
 }
