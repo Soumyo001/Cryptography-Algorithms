@@ -1,7 +1,12 @@
 #include <bits/stdc++.h>
+#include <boost/multiprecision/cpp_int.hpp>
+#include <boost/random.hpp>
 
-long long fastExponentiation(long long base, long long ex, long long mod){
-    long long result = 1;
+using namespace boost::multiprecision;
+using namespace boost::random;
+
+cpp_int fastExponentiation(cpp_int base, cpp_int ex, cpp_int mod){
+    cpp_int result = 1;
     base = base % mod;
     while (ex > 0)
     {
@@ -12,24 +17,26 @@ long long fastExponentiation(long long base, long long ex, long long mod){
     return result;
 }
 
-bool isPrime(long long n, int confidence_level = 5){
+bool isPrime(cpp_int n, int confidence_level = 10){
     if(n <= 1 || n == 4) return false;
     if(n <= 3) return true;
+    if(n % 2 == 0) return false;
 
     // calculate n - 1 = 2^k % m
-    long long m = n - 1;
-    while(m % 2 == 0) m /= 2;
+    cpp_int m = n - 1;
+    while(m % 2 == 0)  m /= 2;
 
-    for (size_t i = 0; i < confidence_level; ++i)
+    std::random_device rd;
+    mt11213b generator(rd());
+    uniform_int_distribution<cpp_int> dis(2, n-2);
+
+    for (int i = 0; i < confidence_level; ++i)
     {
         // choose a => 1 < a < n - 1
-        std::random_device rd;
-        std::mt19937 generator(rd());
-        std::uniform_int_distribution<long long> dis(2, n - 2);
-        long long a = dis(generator);
+        cpp_int a = dis(generator);
 
         // calculate b0 = a^m mod n
-        long long x = fastExponentiation(a, m, n);
+        cpp_int x = fastExponentiation(a, m, n);
         // check if x is +1 or -1
         if(x == 1 || x == n - 1) continue;
 
@@ -47,12 +54,12 @@ bool isPrime(long long n, int confidence_level = 5){
     return true;
 }
 
-long long generateLargePrime(int bit){
+cpp_int generateLargePrime(int bit){
     std::random_device rd;
-    std::mt19937 generator(rd());
-    std::uniform_int_distribution<long long> dis(1LL<<(bit-1), (1LL<<bit)-1);
+    mt19937 generator(rd());
+    uniform_int_distribution<cpp_int> dis(cpp_int(1)<<(bit-1), (cpp_int(1)<<bit)-1);
 
-    long long choice;
+    cpp_int choice;
     do
     {
         choice = dis(generator);
@@ -62,7 +69,8 @@ long long generateLargePrime(int bit){
 }
 
 int main(void){
-    long long p = generateLargePrime(32);
-    long long q = generateLargePrime(32);
-    std::cout<<p<<" "<<q;
+    cpp_int p = generateLargePrime(512);
+    cpp_int q = generateLargePrime(512);
+    cpp_int n = p*q;
+    std::cout<<p<<" "<<q<<" "<<n;
 }
