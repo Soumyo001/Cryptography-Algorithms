@@ -24,6 +24,7 @@ cpp_int fastExponentiation(cpp_int base, cpp_int ex, cpp_int mod){
     return result;
 }
 
+// Miller-Rabin primality test
 bool isPrime(cpp_int n, int confidence_level = 10){
     if(n <= 1 || n == 4) return false;
     if(n <= 3) return true;
@@ -113,7 +114,8 @@ cpp_int extendedEuclid(cpp_int a, cpp_int b, cpp_int& x, cpp_int& y){
 }
 
 // generate private key d by doing modular inverse e*d mod phi_n = 1 mod phi_n, where 0<=d<=n
-// e and phi_n must be coprime i.e. gcd(e, phi_n) = 1, then we need to find the modular inverse d,
+// e and phi_n must be coprime i.e. gcd(e, phi_n) = 1, which is the first condition for having a unique modular inverse
+// then we need to find the modular inverse d,
 // from the equation, e*d + k*phi_n = gcd(e, phi_n) 
 // which can solved using extended euclidian algorithm
 cpp_int generatePrivateEx(const cpp_int e, const cpp_int phi_n){
