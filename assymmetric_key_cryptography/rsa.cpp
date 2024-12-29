@@ -160,10 +160,13 @@ const RSAKeys generateRSAKey(const int bitLength) {
 void PKCS7(std::string& s, int blockSize){
     int n = s.length();
     int padLength = (blockSize - (n%blockSize));
-    for(int i=0;i<padLength;++i) s+=std::to_string(padLength)+" "; 
+    for(int i=0;i<padLength;++i) {
+        s+=std::to_string(padLength);
+        s+=(i==padLength-1? "":" ");
+    } 
 }
 
-std::vector<cpp_int> encrypt(std::string& s, const cpp_int e, const cpp_int n, int block = 20){
+std::vector<cpp_int> encrypt(std::string& s, const cpp_int e, const cpp_int n, int block = 100){
     std::vector<cpp_int> v;
     PKCS7(s, block);
     for (int i = 0; i < s.length(); i += block)
@@ -171,7 +174,7 @@ std::vector<cpp_int> encrypt(std::string& s, const cpp_int e, const cpp_int n, i
         std::string blockText = s.substr(i, block);
         cpp_int blockValue = 0;
         for(const char c : blockText) blockValue = (blockValue*256) + static_cast<cpp_int>(static_cast<unsigned char>(c));
-        cpp_int encryptedBlock = fastExponentiation(blockValue, e, n);
+        cpp_int encryptedBlock = fastExponentiation(blockValue, e, n); // encrypt : c = m^e mod n
         v.push_back(encryptedBlock);
     }
     return v;
@@ -198,7 +201,7 @@ void removePadding(std::string& s){
     std::istringstream ss(s);
     std::string lastWord;
     for(;ss>>lastWord;);
-    int digitCount = lastWord.length()+1;
+    int digitCount = lastWord.length();
     int c = std::stoi(lastWord);
     if(c<=s.size()){
         while(c>0){
@@ -228,6 +231,7 @@ int main(void){
     temp = s;
     std::vector<cpp_int> cipher = encrypt(s, keys.e, keys.n);
     std::string text = decrypt(cipher, keys.d, keys.n);
+    std::cout<<text<<"\n";
     removePadding(text);
     std::cout<<text<<"\n\n"<<(text == temp ? "IDENTICAL!!":"NOT IDENTICAL")<<"\n"<<s.length()<<" "<<text.length();
 }
