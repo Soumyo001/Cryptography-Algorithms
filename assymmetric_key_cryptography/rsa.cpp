@@ -30,7 +30,7 @@ bool isPrime(cpp_int n, int confidence_level = 10){
     if(n <= 3) return true;
     if(n % 2 == 0) return false;
 
-    // calculate n - 1 = 2^k % m
+    // calculate n - 1 = 2^k * m
     cpp_int m = n - 1;
     while(m % 2 == 0)  m /= 2;
 
@@ -92,7 +92,7 @@ cpp_int gcd(cpp_int a, cpp_int b){
 //  let assume the coefficient x1 and y1 for (b, a mod b)
 //  then a.x + b.y = g => b.x1 + (a mod b).y1 = g ---> (ii)
 //  we can write a mod b = a - floor(a/b)*b --> (iii)
-//  by substituting (i) and (ii), we get
+//  by substituting (ii) and (iii), we get
 //     b.x1 + (a-floor(a/b)*b).y1 = g
 //  => b.x1 + a.y1 - (a/b)*b*y1 = g
 //  => a.y1 + b.(x1 - (a/b)*y1) = g --> (iv)
@@ -142,8 +142,8 @@ cpp_int generatePublicEx(const cpp_int phi_n){
 }
 
 const RSAKeys generateRSAKey(const int bitLength) {
-    cpp_int p = generateLargePrime(512);
-    cpp_int q = generateLargePrime(512);
+    cpp_int p = generateLargePrime(bitLength);
+    cpp_int q = generateLargePrime(bitLength);
     cpp_int n = p*q;
     cpp_int phi_n = (p-1)*(q-1);
     cpp_int e = generatePublicEx(phi_n);
@@ -157,9 +157,15 @@ const RSAKeys generateRSAKey(const int bitLength) {
     return keys;
 }
 
+void PKCS7(std::string& s, int blockSize){
+    int n = s.length();
+    int padLength = (blockSize - (n%blockSize));
+    for(int i=0;i<padLength;++i) s+=std::to_string(padLength)+" "; 
+}
+
 std::vector<cpp_int> encrypt(std::string& s, const cpp_int e, const cpp_int n, int block = 20){
     std::vector<cpp_int> v;
-    
+    PKCS7(s, block);
     for (int i = 0; i < s.length(); i += block)
     {
         std::string blockText = s.substr(i, block);
@@ -188,13 +194,40 @@ std::string decrypt(std::vector<cpp_int>& v, const cpp_int d, const cpp_int n){
     return text;
 }
 
+void removePadding(std::string& s){
+    std::istringstream ss(s);
+    std::string lastWord;
+    for(;ss>>lastWord;);
+    int digitCount = lastWord.length()+1;
+    int c = std::stoi(lastWord);
+    if(c<=s.size()){
+        while(c>0){
+            s.pop_back();
+            if(s[s.size()-1]==' '){
+                continue;
+            }
+            --digitCount;
+            if(digitCount == 0){
+                digitCount = lastWord.length();
+                --c;
+            }
+        }
+    }
+    else{
+        std::cout << "Error: Number to remove is greater than string length." << std::endl;
+        exit(EXIT_FAILURE);
+    }
+}
+
 int main(void){
     int bitLength = 512;
     const RSAKeys keys = generateRSAKey(bitLength);
-    std::string s;
+    std::string s,temp;
     std::cout<<"Enter Message : ";
     getline(std::cin, s);
+    temp = s;
     std::vector<cpp_int> cipher = encrypt(s, keys.e, keys.n);
     std::string text = decrypt(cipher, keys.d, keys.n);
-    std::cout<<text<<"\n\n"<<(text == s ? "IDENTICAL!!":"NOT IDENTICAL");
+    removePadding(text);
+    std::cout<<text<<"\n\n"<<(text == temp ? "IDENTICAL!!":"NOT IDENTICAL")<<"\n"<<s.length()<<" "<<text.length();
 }

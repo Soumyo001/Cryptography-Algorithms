@@ -9,7 +9,7 @@ void encrypt(std::string& s, std::string& key, int type){
     for(int i = 0, j = 0; i < s.length(); ++i){
         if((s[i] >= 65 && s[i] <= 90) || ( s[i] >= 97 && s[i] <= 122)){
             if(type == 2){
-                if(isupper(s[i]))  //Enter plain text : Hi I am Soumyo!! ThIs Is A SeCrEt pASSworD, Don'T gIve This tO aNyBoDy!!
+                if(isupper(s[i]))
                 {
                     if (s[i] + ( toupper(key[j % key.length()]) - 65 ) > 90)
                         s[i] = 64 + ( s[i] + ( toupper(key[j % key.length()]) - 65 ) ) - 90;
