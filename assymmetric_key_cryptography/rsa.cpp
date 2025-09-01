@@ -223,7 +223,7 @@ void removePadding(std::string& s){
 }
 
 int main(void){
-    int bitLength = 512;
+    int bitLength = 4096;
     const RSAKeys keys = generateRSAKey(bitLength);
     std::string s,temp;
     std::cout<<"Enter Message : ";
@@ -233,5 +233,5 @@ int main(void){
     std::string text = decrypt(cipher, keys.d, keys.n);
     std::cout<<text<<"\n";
     removePadding(text);
-    std::cout<<text<<"\n\n"<<(text == temp ? "IDENTICAL!!":"NOT IDENTICAL")<<"\n"<<s.length()<<" "<<text.length();
+    std::cout<<text<<"\n\n"<<(text == temp ? "IDENTICAL!!":"NOT IDENTICAL")<<"\n"<<s.length()<<" "<<temp.length()<<" "<<text.length();
 }
